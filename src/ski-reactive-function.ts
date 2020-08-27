@@ -1,4 +1,4 @@
-import { hasAsyncGenerator, trigger, start } from '@ski/streams'
+import { hasAsyncGenerator, trigger, start } from '@ski/streams/streams.js'
 
 export default class SkiReactiveFunction<R = any> {
   private onchange = this.createOnChange()

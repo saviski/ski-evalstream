@@ -1,5 +1,5 @@
 import SkiReactiveFunction from './ski-reactive-function.js'
-import { map } from '@ski/streams'
+import { map } from '@ski/streams/streams.js'
 
 export default abstract class SkiProxyFunction<T extends object>
   extends SkiReactiveFunction<any>

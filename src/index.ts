@@ -1,11 +1,11 @@
-import SkiObservableExpresion from './ski-observable-expression'
-import SkiObservableFunction from './ski-observable-function'
-import SkiProxyFunction from './ski-proxy-function'
-import SkiReactiveFunction from './ski-reactive-function'
-import SkiWatchFunction from './ski-watch-function'
+import SkiStreamExpression from './ski-stream-expression.js'
+import SkiObservableFunction from './ski-stream-function.js'
+import SkiProxyFunction from './ski-proxy-function.js'
+import SkiReactiveFunction from './ski-reactive-function.js'
+import SkiWatchFunction from './ski-watch-function.js'
 
 export {
-  SkiObservableExpresion,
+  SkiStreamExpression,
   SkiObservableFunction,
   SkiProxyFunction,
   SkiReactiveFunction,

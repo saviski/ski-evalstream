@@ -2,15 +2,15 @@
   "name": "@ski/eval-stream",
   "version": "0.1.0",
   "description": "Expression evaluator that updates when async generators (stream) returns a new result",
-  "main": "eval-stream.min.js",
+  "type": "module",
+  "main": "eval-stream.js",
   "module": "eval-stream.js",
   "types": "src/index.ts",
   "scripts": {
     "build": "run-s clean build:*",
     "watch": "run-p \"build:* -- --watch\"",
     "clean": "rimraf js .types",
-    "build:bundle": "rollup -c",
-    "build:typescript": "ttsc"
+    "build:bundle": "rollup -c"
   },
   "repository": {
     "type": "git",

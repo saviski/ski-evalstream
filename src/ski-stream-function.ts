@@ -6,9 +6,9 @@ import {
   mostRecent,
   forEach,
   next,
-} from '@ski/streams'
+} from '@ski/streams/streams.js'
 
-export default class SkiObservableFunction<T extends object> extends SkiProxyFunction<T> {
+export default class SkiStreamFunction<T extends object> extends SkiProxyFunction<T> {
   private dependencies = new Set<HasAsyngIterator<any>>()
 
   protected async *execute(...args) {

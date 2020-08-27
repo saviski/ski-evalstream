@@ -1,9 +1,7 @@
-import SkiObservableFunction from './ski-observable-function.js'
-import { hasAsyncGenerator, pick } from '@ski/streams'
+import { hasAsyncGenerator, pick } from '@ski/streams/streams.js'
+import SkiStreamFunction from './ski-stream-function.js'
 
-export default class SkiObservableExpresion<
-  T extends object = any
-> extends SkiObservableFunction<T> {
+export default class SkiStreamExpression<T extends object> extends SkiStreamFunction<T> {
   constructor(expression: string, context: any) {
     super(
       new Function(
