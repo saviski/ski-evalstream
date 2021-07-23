@@ -11,7 +11,8 @@ export default [
       typescript()
     ],
     external: [
-      "@ski/streams/streams.js"
+      "@ski/streams/streams.js",
+      "@ski/streams/spy.js",
     ]
   }
 ]

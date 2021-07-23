@@ -1,20 +1,21 @@
 {
-  "name": "@ski/eval-stream",
+  "name": "@ski/evalstream",
   "version": "0.1.0",
   "description": "Expression evaluator that updates when async generators (stream) returns a new result",
   "type": "module",
-  "main": "eval-stream.js",
-  "module": "eval-stream.js",
-  "types": "eval-stream.d.ts",
+  "main": "evalstream.js",
+  "module": "evalstream.js",
+  "types": "evalstream.ts",
   "scripts": {
     "build": "run-s clean build:*",
     "watch": "run-p \"build:* -- --watch\"",
     "clean": "rimraf js .types",
-    "build:bundle": "rollup -c"
+    "build:bundle": "rollup -c",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/saviski/ski-eval-stream.git"
+    "url": "git+https://github.com/saviski/ski-evalstream.git"
   },
   "keywords": [
     "async",
@@ -26,10 +27,11 @@
   "author": "saviski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/saviski/ski-eval-stream/issues"
+    "url": "https://github.com/saviski/ski-evalstream/issues"
   },
-  "homepage": "https://github.com/saviski/ski-eval-stream#readme",
+  "homepage": "https://github.com/saviski/ski-evalstream#readme",
   "dependencies": {
+    "@ski/spy": "workspace:^0.1.0",
     "@ski/streams": "workspace:^0.1.0"
   },
   "devDependencies": {
@@ -46,9 +48,9 @@
     ".types",
     "js",
     "src",
-    "eval-stream.js",
-    "eval-stream.min.js",
-    "eval-stream.min.js.map"
+    "evalstream.js",
+    "evalstream.min.js",
+    "evalstream.min.js.map"
   ],
   "prettier": {
     "printWidth": 120,
