@@ -11,7 +11,6 @@ export class LiveFunction<A extends any[], R extends object> extends FunctionStr
       try {
         return fn(...args)
       } catch (error) {
-        console.error(fn.toString(), error)
         return error
       }
     })
@@ -19,10 +18,7 @@ export class LiveFunction<A extends any[], R extends object> extends FunctionStr
 
   async *onchange() {
     while (this.enabled) {
-      let v = await Promise.race(
-        Array.from(this.dependencies.values()).map(value => value[Symbol.asyncIterator]().next())
-      )
-      console.log('onchange', v)
+      await Promise.race(Array.from(this.dependencies.values()).map(value => value[Symbol.asyncIterator]().next()))
       yield
     }
   }
@@ -30,11 +26,8 @@ export class LiveFunction<A extends any[], R extends object> extends FunctionStr
   get(target: any, property: PropertyKey) {
     let value: unknown = target[property]
 
-    console.log('get', property)
-
     if (isAsyncIterable(value)) {
       if (!this.dependencies.has(value)) this.dependencies.set(value, stream(value).memoize())
-
       return this.dependencies.get(value)!.value
     }
 
