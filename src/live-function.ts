@@ -1,40 +1,50 @@
-import { stream, isAsyncIterable, MemoizedStream } from '@ski/streams/streams.js'
-import { FunctionStreamProxy } from './function-stream-proxy.js'
+import { stream, isAsyncIterable, Memoized, UNINITIALIZED } from '@ski/streams/streams.js'
+import { FunctionProxy } from './function-proxy.js'
 
-export class LiveFunction<A extends any[], R extends object> extends FunctionStreamProxy<A, R | Error> {
+export class LiveFunction<A extends any[], R> extends FunctionProxy<A, AsyncGenerator<R>> {
   //
-  private dependencies = new Map<AsyncIterable<any>, MemoizedStream<any>>()
+  private dependencies = new Map<AsyncIterable<any>, Memoized<any>>()
+  private promises = new Set<Promise<IteratorResult<any, any>>>()
+
   enabled = true
 
   constructor(fn: (...args: A) => R) {
-    super((...args) => {
-      try {
-        return fn(...args)
-      } catch (error) {
-        return error
-      }
-    })
+    super(<any>fn)
   }
 
-  async *onchange() {
-    while (this.enabled) {
-      await Promise.race(Array.from(this.dependencies.values()).map(value => value[Symbol.asyncIterator]().next()))
-      yield
-    }
+  private async next(generator: AsyncIterator<any>) {
+    let promise = generator.next()
+    this.promises.add(promise)
+    let { done } = await promise
+    this.promises.delete(promise)
+    !done && this.next(generator)
+    this.enabled = this.promises.size > 0
+  }
+
+  private addDependency(dependency: AsyncIterable<any>) {
+    let memo = stream(dependency).memoize()
+    this.dependencies.set(dependency, memo)
+    this.next(memo[Symbol.asyncIterator]())
+    return memo
   }
 
   get(target: any, property: PropertyKey) {
     let value: unknown = target[property]
-
-    if (isAsyncIterable(value)) {
-      if (!this.dependencies.has(value)) this.dependencies.set(value, stream(value).memoize())
-      return this.dependencies.get(value)!.value
-    }
-
-    return value
+    return isAsyncIterable(value) ? (this.dependencies.get(value) || this.addDependency(value)).value : value
   }
 
   async *run(...args: A): AsyncGenerator<R> {
-    yield* stream(super.run(...args)).filter<R>(value => !(value instanceof Error))
+    let argsproxy = args.map(arg => this.wrap(arg)) as A
+
+    while (this.enabled) {
+      try {
+        if (!done) yield this.unwrap(this.fn(...argsproxy) as unknown as R)
+      } catch (e) {
+        if (e != UNINITIALIZED) throw e
+      }
+
+      if (this.promises.size == 0) return
+      var { done } = await Promise.race(this.promises)
+    }
   }
 }

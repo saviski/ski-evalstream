@@ -1,14 +1,10 @@
-import { stream } from '@ski/streams/streams.js'
-
 const itself = Symbol('self')
 
-export abstract class FunctionStreamProxy<A extends any[], T extends object> {
+export abstract class FunctionProxy<A extends any[], T extends object> {
   //
-  constructor(private fn: (...args: A) => T) {}
+  constructor(protected fn: (...args: A) => T) {}
 
   abstract get(target: any, property: PropertyKey, receiver: any): unknown
-
-  protected abstract onchange(): AsyncIterable<void>
 
   private proxyhandler: ProxyHandler<any> = {
     //
@@ -35,15 +31,8 @@ export abstract class FunctionStreamProxy<A extends any[], T extends object> {
     return (value && value[itself]) || value
   }
 
-  async *run(...args: A): AsyncGenerator<T> {
+  run(...args: A): T {
     let argsproxy = args.map(arg => this.wrap(arg)) as A
-
-    async function* run(this: FunctionStreamProxy<A, T>) {
-      yield this.unwrap(this.fn(...argsproxy))
-    }
-
-    yield* run.call(this)
-
-    yield* stream(this.onchange()).trigger(run, this)
+    return this.unwrap(this.fn(...argsproxy))
   }
 }
